@@ -155,10 +155,10 @@ public:
         consensus.BIP34LockedIn = 1000; // Locked_in at height 1000
 
         // The best chain should have at least this much work
-        consensus.nMinimumChainWork = uint256S("0000000000000000000000000000000000000000000000000000001a2eab88a1"); // Block 0
+        consensus.nMinimumChainWork = uint256S("00000000000000000000000000000000000000000000000000b45ba330631843"); // Block 7246
 
         // By default assume that the signatures in ancestors of this block are valid. Block#
-        consensus.defaultAssumeValid = uint256S("000000007a2b2ddf0ed028dff479dff220c92260179015dd2492fed96c8c0442"); // Block 0
+        consensus.defaultAssumeValid = uint256S("00000000000c9dcb50d8ebe35ae33849952cbe7e9e396e05e63d197cabb586bb"); // Block 7246
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -254,17 +254,18 @@ public:
             {
                 {
                   {0, uint256S("000000f31a47d3b9d1cc321e051bafc825cc6fb2998f3eb589e1fc61b9f08736")},
-				  {1331, uint256S("000000f31a47d3b9d1cc321e051bafc825cc6fb2998f3eb589e1fc61b9f08736")}
+				  {1331, uint256S("000000f31a47d3b9d1cc321e051bafc825cc6fb2998f3eb589e1fc61b9f08736")},
+				  {7246, uint256S("00000000000c9dcb50d8ebe35ae33849952cbe7e9e396e05e63d197cabb586bb")}
                 }
             }
         };
 
         chainTxData = ChainTxData{
             // Update as we know more about the contents of the Gamepass chain
-            1682902597, // * UNIX timestamp of last known number of transactions 2021-06-18 22:03:06 UTC
-            1392,    // * total number of transactions between genesis and that timestamp
+            1683216351, // * UNIX timestamp of last known number of transactions 2021-06-18 22:03:06 UTC
+            8490,    // * total number of transactions between genesis and that timestamp
                         //   (the tx=... number in the SetBestChain debug.log lines)
-            0.699       // * estimated number of transactions per second after that timestamp
+            0.02689522964559008       // * estimated number of transactions per second after that timestamp
         };
 
 
