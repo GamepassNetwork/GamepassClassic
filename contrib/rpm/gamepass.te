@@ -1,0 +1,81 @@
+policy_module(gamepass, 1.100.1)
+
+########################################
+#
+# Declarations
+#
+
+type gamepass_t;
+type gamepass_exec_t;
+init_daemon_domain(gamepass_t, gamepass_exec_t)
+
+permissive gamepass_t;
+
+type gamepass_initrc_exec_t;
+init_script_file(gamepass_initrc_exec_t)
+
+type gamepass_conf_t;
+files_type(gamepass_conf_t)
+
+type gamepass_var_lib_t;
+files_type(gamepass_var_lib_t)
+
+type gamepass_var_run_t;
+files_type(gamepass_var_run_t)
+
+type gamepass_port_t;
+corenet_port(gamepass_port_t)
+
+########################################
+#
+# gamepass local policy
+#
+allow gamepass_t self:process { fork };
+
+allow gamepass_t self:fifo_file rw_fifo_file_perms;
+allow gamepass_t self:unix_stream_socket create_stream_socket_perms;
+
+manage_dirs_pattern(gamepass_t, gamepass_conf_t, gamepass_conf_t)
+manage_files_pattern(gamepass_t, gamepass_conf_t, gamepass_conf_t)
+
+manage_dirs_pattern(gamepass_t, gamepass_var_lib_t, gamepass_var_lib_t)
+manage_files_pattern(gamepass_t, gamepass_var_lib_t, gamepass_var_lib_t)
+files_var_lib_filetrans(gamepass_t, gamepass_var_lib_t, { dir file })
+
+manage_dirs_pattern(gamepass_t, gamepass_var_run_t, gamepass_var_run_t)
+manage_files_pattern(gamepass_t, gamepass_var_run_t, gamepass_var_run_t)
+
+sysnet_dns_name_resolve(gamepass_t)
+corenet_all_recvfrom_unlabeled(gamepass_t)
+
+allow gamepass_t self:tcp_socket create_stream_socket_perms;
+corenet_tcp_sendrecv_generic_if(gamepass_t)
+corenet_tcp_sendrecv_generic_node(gamepass_t)
+corenet_tcp_sendrecv_all_ports(gamepass_t)
+corenet_tcp_bind_generic_node(gamepass_t)
+
+gen_require(`
+    type gamepass_port_t;
+')
+allow gamepass_t gamepass_port_t:tcp_socket name_bind;
+
+gen_require(`
+    type gamepass_port_t;
+')
+allow gamepass_t gamepass_port_t:tcp_socket name_connect;
+
+domain_use_interactive_fds(gamepass_t)
+
+files_read_etc_files(gamepass_t)
+
+miscfiles_read_localization(gamepass_t)
+
+sysnet_dns_name_resolve(gamepass_t)
+
+allow gamepass_t gamepass_exec_t:file execute_no_trans;
+allow gamepass_t self:process setsched;
+corecmd_exec_ls(gamepass_t)
+corenet_tcp_connect_http_port(gamepass_t)
+dev_read_urand(gamepass_t)
+fs_getattr_xattr_fs(gamepass_t)
+kernel_read_system_state(gamepass_t)

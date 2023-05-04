@@ -1,0 +1,33 @@
+# /etc/conf.d/gamepassd: config file for /etc/init.d/gamepassd
+
+# Config file location
+#GAMEPASSD_CONFIGFILE="/etc/gamepass/gamepass.conf"
+
+# What directory to write pidfile to?  (created and owned by $GAMEPASSD_USER)
+#GAMEPASSD_PIDDIR="/var/run/gamepassd"
+
+# What filename to give the pidfile
+#GAMEPASSD_PIDFILE="${GAMEPASSD_PIDDIR}/gamepassd.pid"
+
+# Where to write gamepassd data (be mindful that the blockchain is large)
+#GAMEPASSD_DATADIR="/var/lib/gamepassd"
+
+# User and group to own gamepassd process
+#GAMEPASSD_USER="gamepass"
+#GAMEPASSD_GROUP="gamepass"
+
+# Path to gamepassd executable
+#GAMEPASSD_BIN="/usr/bin/gamepassd"
+
+# Nice value to run gamepassd under
+#GAMEPASSD_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+#GAMEPASSD_OPTS=""
+
+# The timeout in seconds OpenRC will wait for gamepassd to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+GAMEPASSD_SIGTERM_TIMEOUT=60

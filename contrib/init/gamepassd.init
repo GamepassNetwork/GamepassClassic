@@ -1,0 +1,67 @@
+#!/bin/bash
+#
+#  gamepassd The gamepass core server.
+#
+#
+# chkconfig: 345 80 20
+# description: gamepassd
+# processname: gamepassd
+#
+
+# Source function library.
+. /etc/init.d/functions
+
+# you can override defaults in /etc/sysconfig/gamepassd, see below
+if [ -f /etc/sysconfig/gamepassd ]; then
+        . /etc/sysconfig/gamepassd
+fi
+
+RETVAL=0
+
+prog=gamepassd
+# you can override the lockfile via GAMEPASSD_LOCKFILE in /etc/sysconfig/gamepassd
+lockfile=${GAMEPASSD_LOCKFILE-/var/lock/subsys/gamepassd}
+
+# gamepassd defaults to /usr/bin/gamepassd, override with GAMEPASSD_BIN
+gamepassd=${GAMEPASSD_BIN-/usr/bin/gamepassd}
+
+# gamepassd opts default to -disablewallet, override with GAMEPASSD_OPTS
+gamepassd_opts=${GAMEPASSD_OPTS--disablewallet}
+
+start() {
+    echo -n $"Starting $prog: "
+    daemon $DAEMONOPTS $gamepassd $gamepassd_opts
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && touch $lockfile
+    return $RETVAL
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc $prog
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && rm -f $lockfile
+    return $RETVAL
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status $prog
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage: service $prog {start|stop|status|restart}"
+        exit 1
+        ;;
+esac

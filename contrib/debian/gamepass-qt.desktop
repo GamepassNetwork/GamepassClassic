@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Gamepass Core
+Comment=Connect to the Gamepass P2P Network
+Comment[de]=Verbinde mit dem Gamepass peer-to-peer Netzwerk
+Comment[fr]=Gamepass, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Gamepass, eşten eşe kriptografik sanal para birimi
+Exec=gamepass-qt %u
+Terminal=false
+Type=Application
+Icon=gamepass128
+MimeType=x-scheme-handler/gamepass;
+Categories=Office;Finance;

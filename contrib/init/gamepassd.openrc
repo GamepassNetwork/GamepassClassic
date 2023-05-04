@@ -1,0 +1,92 @@
+#!/sbin/runscript
+
+# backward compatibility for existing gentoo layout 
+#
+if [ -d "/var/lib/gamepass/.gamepass" ]; then
+	GAMEPASSD_DEFAULT_DATADIR="/var/lib/gamepass/.gamepass"
+else
+	GAMEPASSD_DEFAULT_DATADIR="/var/lib/gamepassd"
+fi
+
+GAMEPASSD_CONFIGFILE=${GAMEPASSD_CONFIGFILE:-/etc/gamepass/gamepass.conf}
+GAMEPASSD_PIDDIR=${GAMEPASSD_PIDDIR:-/var/run/gamepassd}
+GAMEPASSD_PIDFILE=${GAMEPASSD_PIDFILE:-${GAMEPASSD_PIDDIR}/gamepassd.pid}
+GAMEPASSD_DATADIR=${GAMEPASSD_DATADIR:-${GAMEPASSD_DEFAULT_DATADIR}}
+GAMEPASSD_USER=${GAMEPASSD_USER:-${GAMEPASS_USER:-gamepass}}
+GAMEPASSD_GROUP=${GAMEPASSD_GROUP:-gamepass}
+GAMEPASSD_BIN=${GAMEPASSD_BIN:-/usr/bin/gamepassd}
+GAMEPASSD_NICE=${GAMEPASSD_NICE:-${NICELEVEL:-0}}
+GAMEPASSD_OPTS="${GAMEPASSD_OPTS:-${GAMEPASS_OPTS}}"
+
+name="Gamepass Core Daemon"
+description="Gamepass cryptocurrency P2P network daemon"
+
+command="/usr/bin/gamepassd"
+command_args="-pid=\"${GAMEPASSD_PIDFILE}\" \
+		-conf=\"${GAMEPASSD_CONFIGFILE}\" \
+		-datadir=\"${GAMEPASSD_DATADIR}\" \
+		-daemon \
+		${GAMEPASSD_OPTS}"
+
+required_files="${GAMEPASSD_CONFIGFILE}"
+start_stop_daemon_args="-u ${GAMEPASSD_USER} \
+			-N ${GAMEPASSD_NICE} -w 2000"
+pidfile="${GAMEPASSD_PIDFILE}"
+
+# The retry schedule to use when stopping the daemon. Could be either
+# a timeout in seconds or multiple signal/timeout pairs (like
+# "SIGKILL/180 SIGTERM/300")
+retry="${GAMEPASSD_SIGTERM_TIMEOUT}"
+
+depend() {
+	need localmount net
+}
+
+# verify
+# 1) that the datadir exists and is writable (or create it)
+# 2) that a directory for the pid exists and is writable
+# 3) ownership and permissions on the config file
+start_pre() {
+	checkpath \
+	-d \
+	--mode 0750 \
+	--owner "${GAMEPASSD_USER}:${GAMEPASSD_GROUP}" \
+	"${GAMEPASSD_DATADIR}"
+
+	checkpath \
+	-d \
+	--mode 0755 \
+	--owner "${GAMEPASSD_USER}:${GAMEPASSD_GROUP}" \
+	"${GAMEPASSD_PIDDIR}"
+
+	checkpath -f \
+	-o ${GAMEPASSD_USER}:${GAMEPASSD_GROUP} \
+	-m 0660 \
+	${GAMEPASSD_CONFIGFILE}
+
+	checkconfig || return 1
+}
+
+checkconfig()
+{
+	if ! grep -qs '^rpcpassword=' "${GAMEPASSD_CONFIGFILE}" ; then
+		eerror ""
+		eerror "ERROR: You must set a secure rpcpassword to run gamepassd."
+		eerror "The setting must appear in ${GAMEPASSD_CONFIGFILE}"
+		eerror ""
+		eerror "This password is security critical to securing wallets "
+		eerror "and must not be the same as the rpcuser setting."
+		eerror "You can generate a suitable random password using the following "
+		eerror "command from the shell:"
+		eerror ""
+		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
+		eerror ""
+		eerror "It is recommended that you also set alertnotify so you are "
+		eerror "notified of problems:"
+		eerror ""
+		eerror "ie: alertnotify=echo %%s | mail -s \"Gamepass Alert\"" \
+			"admin@foo.com"
+		eerror ""
+		return 1
+	fi
+}

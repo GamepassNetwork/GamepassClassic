@@ -1,0 +1,23 @@
+FROM arm32v7/ubuntu:latest
+
+MAINTAINER cade <cade.call@mediciventures.com>
+
+EXPOSE $RPCPORT
+
+EXPOSE $PORT
+
+RUN useradd -ms /bin/bash gamepass
+
+RUN mkdir /etc/gamepass
+
+RUN mkdir /var/lib/gamepass
+
+RUN chown gamepass:gamepass /etc/gamepass /var/lib/gamepass
+
+WORKDIR /home/gamepass
+
+COPY --chown=gamepass:gamepass linux64/* ./run.sh /home/gamepass/
+
+USER gamepass
+
+CMD ["/home/gamepass/run.sh"]

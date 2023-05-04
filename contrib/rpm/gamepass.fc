@@ -1,0 +1,8 @@
+/usr/bin/gamepass-cli		--	gen_context(system_u:object_r:gamepass_exec_t,s0)
+/usr/sbin/gamepassd		--	gen_context(system_u:object_r:gamepass_exec_t,s0)
+/usr/lib(64)?/GamepassCore/gamepassd		--	gen_context(system_u:object_r:gamepass_exec_t,s0)
+
+/etc/gamepass(/.*)?		gen_context(system_u:object_r:gamepass_conf_t,s0)
+/var/lib/gamepass(/.*)?		gen_context(system_u:object_r:gamepass_var_lib_t,s0)
+
+(/var)?/run/gamepassd(/.*)?   gen_context(system_u:object_r:gamepass_var_run_t,s0)
