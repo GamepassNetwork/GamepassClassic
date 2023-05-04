@@ -207,5 +207,4 @@ private:
 void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned int& nExtraNonce);
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev);
 
-int GenerateGamepasss(bool fGenerate, int nThreads, const CChainParams& chainparams);
 #endif // GAMEPASS_MINER_H
